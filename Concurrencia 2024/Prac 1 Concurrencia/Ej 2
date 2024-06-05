@@ -1,0 +1,61 @@
+programa Ejercicio2
+procesos
+  proceso juntarPapelEsquina(ES totPapeles: numero)
+  comenzar
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+      totPapeles:= totPapeles + 1
+  fin
+  proceso juntarPapeles
+  variables
+    totPapeles: numero
+  comenzar
+    totPapeles:=0
+    repetir 2
+      juntarPapelEsquina(totPapeles)
+      mover
+    juntarPapelEsquina(totPapeles)
+    Informar(totPapeles)
+  fin
+areas
+  AreaR1: AreaP(1,1,1,3)
+  AreaR2: AreaP(1,4,3,4)
+  AreaR3: AreaP(4,2,4,4)
+  AreaR4: AreaP(2,1,4,1)
+robots
+  robot tipo1
+  comenzar
+    juntarPapeles
+  fin
+  robot tipo2 
+  comenzar
+    derecha
+    juntarPapeles
+  fin
+  robot tipo3
+  comenzar
+    repetir 2
+      derecha
+    juntarPapeles
+  fin
+  robot tipo4
+  comenzar
+    repetir 3
+      derecha
+    juntarPapeles
+  fin
+variables
+  r1: tipo1
+  r2: tipo2
+  r3: tipo3
+  r4: tipo4
+comenzar
+  AsignarArea(r1,AreaR1)
+  AsignarArea(r2,AreaR2)
+  AsignarArea(r3,AreaR3)
+  AsignarArea(r4,AreaR4)
+  Iniciar(r1,1,1)
+  Iniciar(r2,1,4)
+  Iniciar(r3,4,4)
+  Iniciar(r4,4,1)
+fin   

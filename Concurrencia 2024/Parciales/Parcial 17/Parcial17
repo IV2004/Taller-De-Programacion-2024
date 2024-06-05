@@ -1,0 +1,148 @@
+programa Parcial1
+procesos
+  proceso izquierda
+  comenzar
+    repetir 3
+      derecha
+  fin
+  proceso juntarPapeles(ES cant: numero; ES esquinasVaciadas: numero)
+  comenzar
+    si HayPapelEnLaEsquina
+      mientras HayPapelEnLaEsquina
+        tomarPapel
+        cant:= cant + 1
+    esquinasVaciadas:= esquinasVaciadas + 1
+  fin
+  proceso recolectarPapeles(E cant: numero)
+  variables
+    av: numero
+    ca: numero
+  comenzar
+    av:= PosAv
+    ca:= PosCa
+    Pos(99,99)
+    repetir cant
+      tomarPapel
+    Pos(av,ca)
+  fin
+  proceso depositarPapeles(E cantTemporal: numero)
+  variables
+    av: numero
+    ca: numero
+  comenzar
+    av:= PosAv
+    ca:= PosCa
+    BloquearEsquina(99,99)
+    Pos(99,99)
+    repetir cantTemporal
+      depositarPapel
+    Pos(av,ca)
+    LiberarEsquina(99,99)
+  fin
+  proceso recorrerLado (ES largo: numero; ES cant: numero; ES esquinasVaciadas: numero)
+  variables
+    cantTemporal: numero
+  comenzar
+    cantTemporal:= 0
+    repetir largo
+      mover
+      juntarPapeles(cantTemporal,esquinasVaciadas)
+    cant:= cant + cantTemporal
+    {A considerar de que podria despoitar los papeles fuera de este proceso}
+    depositarPapeles(cantTemporal)
+  fin
+  proceso recorrerEscalon(ES cant: numero; ES esquinasVaciadas: numero;ES alto: numero; ES ancho: numero)
+  comenzar
+    recorrerLado(alto,cant,esquinasVaciadas)
+    derecha
+    recorrerLado(ancho,cant,esquinasVaciadas)
+    izquierda
+  fin
+areas
+  AreaRF: AreaP(1,1,1,1)
+  AreaEnComun: AreaC (99,99,99,99)
+  AreaR1: AreaP(2,1,18,13)
+  AreaR2: AreaP(32,1,48,13)
+  AreaR3: AreaP(62,1,78,13)
+robots
+  robot tipo1
+  variables
+    esquinasVaciadas: numero
+    cant: numero
+    alto: numero
+    ancho: numero
+    ok: numero
+  comenzar
+    cant:= 0
+    esquinasVaciadas:= 0
+    {}
+    Random(alto,1,3)
+    Random(ancho,2,4)
+    {}
+    {Junta los papeles de la priemra posicion}
+    {juntarPapeles(cant,esquinasVaciadas)}
+    repetir 4
+      recorrerEscalon(cant,esquinasVaciadas,alto,ancho)
+      {Avisa que termino de recorrer}
+      EnviarMensaje(1,RF)
+      {Espera a que le de el ok de seguir recorreindo y se sincroniza}
+      RecibirMensaje(ok,RF)
+    {}
+    {Envia cant de Papeles}
+    EnviarMensaje(cant,RF)
+    {Recibe el ok de que ahora le envie la cant de esquinasVaciadas}
+    RecibirMensaje(ok,RF)
+    EnviarMensaje(esquinasVaciadas,RF)
+  fin
+  robot tipoFiscalizador
+  variables
+    ok: numero
+    aux: numero
+    cantTotal: numero
+    esquinasVaciadas: numero
+  comenzar
+    cantTotal:= 0
+    esquinasVaciadas:= 0
+    {}
+    repetir 4
+      repetir 3
+        {Recibe las confirmaciones de que terminaron de hacer el escalon}
+        RecibirMensaje(ok,*)
+      {Ya sincronizados les avisa que puede realizar el siguiente esaclon}
+      EnviarMensaje(1,R1)
+      EnviarMensaje(1,R2)
+      EnviarMensaje(1,R3)
+    {}
+    {Recibe la cant total de papeles de cada robot}
+    repetir 3
+      RecibirMensaje(aux,*)
+      cantTotal:= cantTotal + aux
+    {Les avisa que pueden enviar la cant de esquinasVaciadas}
+    EnviarMensaje(1,R1)
+    EnviarMensaje(1,R2)
+    EnviarMensaje(1,R3)
+    repetir 3
+      RecibirMensaje(aux,*)
+      esquinasVaciadas:= esquinasVaciadas + aux
+    {}
+    {Recolecta los papeles depositados por los robots  e informa la cant de esquinasVaciadas}
+    recolectarPapeles(cantTotal)
+    Informar('Se_vaciaron_',esquinasVaciadas)
+  fin
+variables
+  R1,R2,R3: tipo1
+  RF: tipoFiscalizador
+comenzar
+  AsignarArea(RF,AreaRF)
+  AsignarArea(RF,AreaEnComun)
+  AsignarArea(R1,AreaEnComun)
+  AsignarArea(R2,AreaEnComun)
+  AsignarArea(R3,AreaEnComun)
+  AsignarArea(R1,AreaR1)
+  AsignarArea(R2,AreaR2)
+  AsignarArea(R3,AreaR3)
+  Iniciar(RF,1,1)
+  Iniciar(R1,2,1)
+  Iniciar(R2,32,1)
+  Iniciar(R3,62,1)
+fin

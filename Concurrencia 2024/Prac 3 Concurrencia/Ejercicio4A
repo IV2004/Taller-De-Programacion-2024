@@ -1,0 +1,104 @@
+programa Ejercicio4
+areas
+  AreaDeTomar: AreaPC(10,10,10,10)
+  AreaDeDepositar: AreaPC(11,11,11,11)
+  AreaCoordinador: AreaP(1,1,1,1)
+  AreaR1: AreaP(9,9,9,9)
+  AreaR2: AreaP(9,10,9,10)
+  AreaR3: AreaP(9,11,9,11)
+  AreaR4: AreaP(9,12,9,12)
+robots
+  robot tipo1
+  variables
+    ID: numero
+    avOri: numero
+    caOri: numero
+    seguir: boolean
+  comenzar
+    RecibirMensaje(ID,RC)
+    avOri:= PosAv
+    caOri:= PosCa
+    seguir:= V
+    {comienza}
+    mientras (seguir = V)
+      BloquearEsquina(10,10)
+      Pos(10,10)
+      si HayFlorEnLaEsquina
+        tomarFlor
+        BloquearEsquina(11,11)
+        Pos(11,11)
+        LiberarEsquina(10,10)
+        depositarFlor
+        Pos(avOri,caOri)
+        LiberarEsquina(11,11)
+      sino
+        seguir:= F
+        EnviarMensaje(ID,RC)
+        Pos(avOri,caOri)
+        LiberarEsquina(10,10)
+    RecibirMensaje(ID,RC)
+    si(ID = 0)
+      Pos(11,11)
+      mientras HayFlorEnLaEsquina
+        tomarFlor
+  fin
+  robot tipoCoordinador
+  variables
+    ID: numero
+  comenzar
+    EnviarMensaje(1,R1)
+    EnviarMensaje(2,R2)
+    EnviarMensaje(3,R3)
+    EnviarMensaje(4,R4)
+    repetir 4
+      RecibirMensaje(ID,*)
+    Informar('El_ultimo_es_',ID)
+    si (ID = 1)
+      EnviarMensaje(0,R1)
+      EnviarMensaje(10,R2)
+      EnviarMensaje(10,R3)
+      EnviarMensaje(10,R4)
+    sino
+      si(ID = 2)
+        EnviarMensaje(0,R2)
+        EnviarMensaje(10,R1)
+        EnviarMensaje(10,R2)
+        EnviarMensaje(10,R3)
+      sino
+        si (ID = 3)
+          EnviarMensaje(0,R3)
+          EnviarMensaje(10,R1)
+          EnviarMensaje(10,R2)
+          EnviarMensaje(10,R4)
+        sino
+          EnviarMensaje(0,R4)
+          EnviarMensaje(10,R1)
+          EnviarMensaje(10,R2)
+          EnviarMensaje(10,R3)
+  fin
+variables
+  RC: tipoCoordinador
+  R1: tipo1
+  R2: tipo1
+  R3: tipo1
+  R4: tipo1
+comenzar
+  AsignarArea(RC,AreaCoordinador)
+  AsignarArea(R1,AreaR1)
+  AsignarArea(R2,AreaR2)
+  AsignarArea(R3,AreaR3)
+  AsignarArea(R4,AreaR4)
+  AsignarArea(R1,AreaDeTomar)
+  AsignarArea(R2,AreaDeTomar)
+  AsignarArea(R3,AreaDeTomar)
+  AsignarArea(R4,AreaDeTomar)
+  AsignarArea(R1,AreaDeDepositar)
+  AsignarArea(R2,AreaDeDepositar)
+  AsignarArea(R3,AreaDeDepositar)
+  AsignarArea(R4,AreaDeDepositar)
+  Iniciar(RC,1,1)
+  Iniciar(R1,9,9)
+  Iniciar(R2,9,10)
+  Iniciar(R3,9,11)
+  Iniciar(R4,9,12)
+fin

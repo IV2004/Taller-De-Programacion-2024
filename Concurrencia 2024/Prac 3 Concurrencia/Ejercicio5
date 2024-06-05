@@ -1,0 +1,92 @@
+programa Ejercicio5
+areas
+  AreaCor: AreaP(1,1,1,1)
+  Fuente: AreaPC(11,11,11,11)
+  AreaR1: AreaP(4,1,4,100)
+  AreaR2: AreaP(6,1,6,100)
+  AreaR3: AreaP(8,1,8,100)
+  AreaR4: AreaP(10,1,10,100)
+robots
+  robot tipo1
+  variables
+    ID: numero
+    av: numero
+    ca: numero
+    hayPapel: boolean
+  comenzar
+    RecibirMensaje(ID,RC)
+    hayPapel:= V
+    {waos test}
+    mientras ((hayPapel = V)&(PosCa<100))
+      av:=PosAv
+      ca:= PosCa
+      BloquearEsquina(11,11)
+      Pos(11,11)
+      si HayPapelEnLaEsquina
+        tomarPapel
+        Pos(av,ca)
+        LiberarEsquina(11,11)
+        depositarPapel
+        mover
+      sino
+        hayPapel:= F
+        Pos(av,ca)
+        LiberarEsquina(11,11)
+    EnviarMensaje(ID,RC)
+    EnviarMensaje(PosCa,RC)
+  fin
+  robot tipoCoordinador
+  variables
+    ID: numero
+    cant: numero
+    max: numero
+    maxID: numero
+  comenzar
+    EnviarMensaje(1,R1)
+    EnviarMensaje(2,R2)
+    EnviarMensaje(3,R3)
+    EnviarMensaje(4,R4)
+    max:= 0
+    repetir 4
+      RecibirMensaje(ID,*)
+      Informar(1234)
+      si (ID = 1)
+        Informar('Recibi_cant_R1_',1)
+        RecibirMensaje(cant,R1)
+      sino
+        si (ID = 2)
+          Informar('Recibi_cant_R2_',2)
+          RecibirMensaje(cant,R2)
+        sino
+          si (ID = 3)
+            Informar('Recibi_cant_R3_',3)
+            RecibirMensaje(cant,R3)
+          sino
+            Informar('Recibi_cant_R4_',4)
+            RecibirMensaje(cant,R4)
+      si (cant > max)
+        max:=cant
+        maxID:= ID
+  fin
+variables
+  RC: tipoCoordinador
+  R1: tipo1
+  R2: tipo1
+  R3: tipo1
+  R4: tipo1
+comenzar
+  AsignarArea(RC,AreaCor)
+  AsignarArea(R1,Fuente)
+  AsignarArea(R2,Fuente)
+  AsignarArea(R3,Fuente)
+  AsignarArea(R4,Fuente)
+  AsignarArea(R1,AreaR1)
+  AsignarArea(R2,AreaR2)
+  AsignarArea(R3,AreaR3)
+  AsignarArea(R4,AreaR4)
+  Iniciar(RC,1,1)
+  Iniciar(R1,4,1)
+  Iniciar(R2,6,1)
+  Iniciar(R3,8,1)
+  Iniciar(R4,10,1)
+fin

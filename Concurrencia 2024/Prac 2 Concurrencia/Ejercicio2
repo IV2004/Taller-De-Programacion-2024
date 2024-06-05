@@ -1,0 +1,79 @@
+programa Ejercicio2
+procesos
+  proceso juntarFlores(ES totFlores: numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      totFlores:= totFlores + 1
+  fin
+  proceso juntarPapeles(ES totPapeles: numero)
+  comenzar
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+      totPapeles:= totPapeles + 1
+  fin
+  proceso juntarFloresYPapeles(ES f: numero; ES p: numero)
+  comenzar
+    juntarFlores(f)
+    juntarPapeles(p)
+  fin
+  proceso recorrerEscalon(E alto: numero;ES cant: numero )
+  variables
+    f: numero
+    p: numero
+  comenzar
+    f:=0
+    p:=0
+    repetir alto
+      juntarFloresYPapeles(f,p)
+      mover
+    juntarFloresYPapeles(f,p)
+    derecha
+    mover
+    juntarFloresYPapeles(f,p)
+    repetir 3
+      derecha
+    si(f > p)
+      cant:= cant + 1
+  fin
+areas
+  AreaRF: AreaP(1,1,1,1)
+  AreaR1: AreaP(2,1,6,21)
+  AreaR2: AreaP(7,1,11,21)
+  AreaR3: AreaP(12,1,16,21)
+robots
+  robot tipo1
+  variables
+    alto: numero
+    cant: numero
+  comenzar
+    cant:=0
+    repetir 4
+      Random(alto,1,5)
+      recorrerEscalon(alto,cant)
+    EnviarMensaje(cant,RF)
+  fin
+  robot tipoJefe
+  variables
+    sumaTotal: numero
+    aux: numero
+  comenzar
+    sumaTotal:=0
+    repetir 3
+      RecibirMensaje(aux,*)
+      sumaTotal:= sumaTotal + aux
+    Informar('La_suma_total_es_',sumaTotal)
+  fin
+variables
+  RF: tipoJefe
+  R1,R2,R3: tipo1
+comenzar
+  AsignarArea(RF,AreaRF)
+  AsignarArea(R1,AreaR1)
+  AsignarArea(R2,AreaR2)
+  AsignarArea(R3,AreaR3)
+  Iniciar(RF,1,1)
+  Iniciar(R1,2,1)
+  Iniciar(R2,7,1)
+  Iniciar(R3,12,1)
+fin

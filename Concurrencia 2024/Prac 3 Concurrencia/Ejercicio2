@@ -1,0 +1,125 @@
+programa Ejercicio2
+procesos
+  proceso izquierda
+  comenzar
+    repetir 3
+      derecha
+  fin
+  proceso juntarFlores(ES cantFlores: numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      cantFlores:= cantFlores + 1
+  fin
+  proceso juntarPapeles(ES cantPapeles: numero)
+  comenzar
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+      cantPapeles:= cantPapeles + 1
+  fin
+  proceso recorrerEscalonR1(ES pasos: numero; ES cant: numero)
+  comenzar
+    repetir pasos
+      mover
+    derecha
+    juntarFlores(cant)
+    repetir pasos
+      mover
+    izquierda
+    juntarFlores(cant)
+  fin
+  proceso recorrerEscalonR2(ES pasos: numero; ES cant: numero)
+  comenzar
+    repetir pasos
+      mover
+    juntarPapeles(cant)
+    izquierda
+    repetir pasos
+      mover
+    juntarPapeles(cant)
+    derecha
+  fin
+areas
+  AreaR1: AreaP(1,1,15,30)
+  AreaR2: AreaP(17,1,31,30)
+  AreaCentral: AreaPC(16,16,16,16)
+  AreaRF: AreaP(16,1,16,1)
+robots
+  robot tipo1
+  variables
+    cant: numero
+    pasos: numero
+  comenzar
+    cant:= 0
+    pasos:= 5
+    {El siguiente repetir recorre del escalon 5 al 2}
+    repetir 4
+      recorrerEscalonR1(pasos,cant)
+      pasos:= pasos-1
+    mover
+    derecha
+    {bloquea el area central y le envia el mensaje al jefe}
+    BloquearEsquina(16,16)
+    mover
+    EnviarMensaje(1,RF)
+    derecha
+    derecha
+    mover
+    LiberarEsquina(16,16)
+    
+    pasos:= 2
+    repetir 4
+      recorrerEscalonR1(pasos,cant)
+      pasos:= pasos + 1
+    derecha
+  fin
+  robot tipo2
+  variables
+    cant: numero
+    pasos: numero
+  comenzar
+    cant:=0
+    pasos:=5
+    repetir 4
+      recorrerEscalonR2(pasos,cant)
+      pasos:=pasos-1
+    mover
+    izquierda
+    
+    BloquearEsquina(16,16)
+    mover
+    EnviarMensaje(2,RF)
+    derecha
+    derecha
+    mover
+    LiberarEsquina(16,16)
+    
+    pasos:= 2
+    repetir 4
+      recorrerEscalonR2(pasos,cant)
+      pasos:= pasos + 1
+    izquierda
+  fin
+  robot Jefe
+  variables
+    aux: numero
+    ganador: numero
+  comenzar
+    RecibirMensaje(ganador,*)
+    RecibirMensaje(aux,*)
+    Informar('Gano_el_robot_',ganador)
+  fin
+variables
+  R1: tipo1
+  R2: tipo2
+  RF: Jefe
+comenzar
+  AsignarArea(RF,AreaRF)
+  AsignarArea(R1,AreaR1)
+  AsignarArea(R2, AreaR2)
+  AsignarArea(R1,AreaCentral)
+  AsignarArea(R2,AreaCentral)
+  Iniciar(R1,1,1)
+  Iniciar(R2,31,1)
+  Iniciar(RF,16,1)
+fin

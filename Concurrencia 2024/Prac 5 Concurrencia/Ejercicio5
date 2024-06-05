@@ -1,0 +1,86 @@
+programa Ejercicio5
+procesos
+  proceso  depositarPapeles(E cant: numero)
+  variables
+    av: numero
+    ca: numero
+  comenzar
+    av:= PosAv
+    ca:= PosCa    
+    BloquearEsquina(100,1)
+    Pos(100,1)
+    repetir cant
+      depositarPapel
+    Pos(av,ca)
+    LiberarEsquina(100,1)
+  fin
+  proceso recoltarPapeles(E cant: numer;: ES total: numero)
+  variables
+    av: numero
+    ca: numero
+  comenzar
+    av:= PosAv
+    ca:= PosCa
+    repetir cant
+      BloquearEsquina(100,1)
+      Pos(100,1)
+      tomarPapel
+      Pos(av,ca)
+      LiberarEsquina(100,1)
+      depositarPapel
+    total:= total + cant
+  fin
+areas
+  AreaDeposito: AreaC(100,1,100,1)
+  AreaServidor: AreaP(13,1,13,1)
+  AreaR1: AreaP(12,1,12,1)
+  AreaR2: AreaP(11,1,11,1)
+  AreaR3: AreaP(10,1,10,1)
+robots
+  robot tipoCliente
+  variables
+    total: numero
+    cant: numero
+    ID: numero
+  comenzar
+    RecibirMensaje(ID,RS)
+    total:=0
+    repetir 4
+      EnviarMensaje(ID,RS)
+      RecibirMensaje(cant,RS)
+      recolectarPapeles(cant,total)
+    EnviarMensaje(0,RS)
+  fin
+  robot tipoServidor
+  variables
+    cant: numero
+    restan: numero
+    ID: numero
+  comenzar
+    restan:= 3 {cantidad de robots que no finalizaron sus intentos}
+    EnviarMensaje(1,R1)
+    EnviarMensaje(2,R2)
+    EnviarMensaje(3,R3)
+    mientras (restan <> 0)
+      RecibirMensaje(ID,*)
+      si (ID <> 0)
+        Random(cant,1,5)
+        depositarPapeles(cant)
+        si (ID = 1)
+          EnviarMensaje(cant,R1)
+        sino
+          si (ID = 2)
+            EnviarMensaje(cant,R2)
+          sino
+            EnviarMensaje(cant,R3)
+      sino
+        restan:= restan - 1
+
+  fin
+variables
+  R1,R2,R3: tipoCliente
+  RS: tipoServidor
+comenzar
+  AsignarArea()
+  Iniciar()
+fin

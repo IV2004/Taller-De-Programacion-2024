@@ -1,0 +1,108 @@
+programa Parcial2
+{-----CAMBIOS QUE SE PODRIAN HACER--------}
+{COMO UNO YA SABE CUANTOS INTENTOS SE VAN A AHCER EN TOTAL, QUE LA CONDICION}
+{DE EL FISCALIZADOR NO SEA MIENTRAS AUX<3, PORQUE ESO CONDICIONA A QUE EL ROBOT}
+{ENVIE UN MENSAJE CUANDO TERMINO, SIENDO ESTO ALGO NO REALMENTE NECESARIO}
+{DEBIDO A QUE SABEMOS CUANTOS INTENTOS VA A HACER, OSEA QUE SABEMOS CUANDO}
+{DEBERIAMOS DEJAR DE RECIBIR ID'S COMO FISCALIZADOR}
+{EL CODIGO CAMBIARIA BASTANTE Y SE RECIBIRIAN LOS ID'S Y INTENTOS DE CADA R}
+{AL COMIENZO, PARA DESPUES MIENTRAS LOS INTENTOS DE TODOS NO SE TERMINEN}
+{SE SIGA RECIBIENDO MENSAJES}
+{--EN RESUMEN, QUE EL ENVIAR UN 0 AL FINAL SE PUEDE CONSIDERAR INCORRECTO}
+{POR NO QUERER AHCER UN LABURO MAS GRANDE}
+procesos
+  proceso juntarFlores(ES cantF: numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      cantF:= cantF + 1
+  fin
+  proceso recolectarFlores(ES cant: numero; E av: numero; E ca: numero)
+  variables
+    avOri,caOri: numero
+  comenzar
+    avOri:= PosAv
+    caOri:= PosCa
+    BloquearEsquina(av,ca)
+    Pos(av,ca)
+    juntarFlores(cant)
+    Pos(avOri,caOri)
+    LiberarEsquina(av,ca)
+  fin
+areas
+  AreaRF: AreaP(9,9,9,9)
+  cuadrante: AreaPC(10,10,30,30)
+  AreaR1: AreaP(1,1,1,1)
+  AreaR2: AreaP(2,1,2,1)
+  AreaR3: AreaP(3,1,3,1) 
+robots
+  robot tipoFlorero
+  variables
+    ID: numero
+    intentos: numero
+    cantF: numero
+    av,ca: numero
+  comenzar
+    cantF:= 0
+    Random(intentos,2,5)
+    Informar('intentos_',intentos)
+    RecibirMensaje(ID,RF)
+    {}
+    repetir intentos
+      EnviarMensaje(ID,RF)
+      RecibirMensaje(av,RF)
+      RecibirMensaje(ca,RF)
+      recolectarFlores(cantF,av,ca)
+    {Avisa que termino al programa}
+    EnviarMensaje(0,RF)
+  fin
+  robot tipoFiscalizador
+  variables
+    ID: numero
+    terminaron, total: numero
+    av,ca: numero
+  comenzar
+    {Si o si son necesarias las ID's debido a el envio de AV y CA}
+    EnviarMensaje(1,R1)
+    EnviarMensaje(2,R2)
+    EnviarMensaje(3,R3)
+    {}
+    total:=0
+    terminaron:=0
+    {}
+    mientras (terminaron<3)
+      RecibirMensaje(ID,*)
+      si(ID>0)
+        total:= total + 1
+        Random(av,10,30)
+        Random(ca,10,30)
+        si (ID = 1)
+          EnviarMensaje(av,R1)
+          EnviarMensaje(ca,R1)
+        sino
+          si(ID = 2)
+            EnviarMensaje(av,R2)
+            EnviarMensaje(ca,R2)
+          sino
+            EnviarMensaje(av,R3)
+            EnviarMensaje(ca,R3)
+      sino
+        terminaron:= terminaron + 1
+    Informar('catn_total_',total)
+  fin
+variables
+  R1,R2,R3: tipoFlorero
+  RF: tipoFiscalizador
+comenzar
+  AsignarArea(RF,AreaRF)
+  AsignarArea(R1,AreaR1)
+  AsignarArea(R2,AreaR2)
+  AsignarArea(R3,AreaR3)
+  AsignarArea(R1,cuadrante)
+  AsignarArea(R2,cuadrante)
+  AsignarArea(R3,cuadrante)
+  Iniciar(RF,9,9)
+  Iniciar(R1,1,1)
+  Iniciar(R2,2,1)
+  Iniciar(R3,3,1)
+fin

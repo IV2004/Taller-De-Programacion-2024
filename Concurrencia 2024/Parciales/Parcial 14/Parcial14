@@ -1,0 +1,152 @@
+programa Parcial2
+{SE PUEDE CONSIDERAR INCORRECTO DEBIDO A QUE AHCE UNA BARRERA CUANDO NO SE PIDE}
+{SE DEBERIA CAMBIAR EL REPTIR 9 Y EN CADA ITRACION PEDIRIA ID ADEMAS DE SU CANT TEMPORAL}
+{EL COORDINADOR DEBERIA MANTENER UNA CANT TOATL DE CADA UNO}
+procesos
+  proceso maximo(E c1: numero; E c2: numero; E c3: numero)
+  {El maximo tambien se podria ir calculando en cada iteracion del repetir 9 pero como son 3 robots}
+  {lo puedo realizar aca de manear mas simple}
+  variables
+    idMax: numero
+  comenzar
+    idMax:=0
+    si(c1>c2)&(c1>c3)
+      idMax:= 1
+    sino
+      si (c2>c1)&(c2>c3)
+        idMax:= 2
+      sino
+        si (c3>c1)&(c3>c2)
+          idMax:= 3
+        sino
+          Informar('Nose_como_sacar_max_XD',1)
+    Informar('ID_MAX_',idMax)
+  fin
+  proceso depositarF(E cant: numero)
+  variables
+    av: numero
+    ca: numero
+  comenzar
+    av:= PosAv
+    ca:= PosCa
+    repetir cant
+      BloquearEsquina(50,50)
+      Pos(50,50)
+      depositarFlor
+      Pos(av,ca)
+      LiberarEsquina(50,50)
+  fin
+  proceso recolectarFlores(E cant: numero)
+  variables
+    av: numero
+    ca: numero
+  comenzar
+    av:= PosAv
+    ca:= PosCa
+    BloquearEsquina(50,50)
+    Pos(50,50)
+    repetir cant
+      tomarFlor
+    Pos(av,ca)
+    LiberarEsquina(50,50)
+  fin
+  proceso juntarFlores(ES cant: numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      cant:= cant + 1
+  fin
+  proceso realizarLado(E lado: numero; ES cant: numero)
+  comenzar
+    repetir lado
+      mover
+      juntarFlores(cant)
+  fin
+  proceso realizarCuadrado(E lado: numero; ES cant: numero)
+  comenzar
+    repetir 4
+      realizarLado(lado,cant)
+      derecha
+    repetir (lado + 1)
+      mover
+  fin
+areas
+  AreaRF: AreaP(100,100,100,100)
+  AreaEnComun: AreaC(50,50,50,50)
+  AreaR1: AreaP(1,1,7,24)
+  AreaR2: AreaP(10,1,17,24)
+  AreaR3: AreaP(20,1,27,24)
+robots
+  robot tipo1
+  variables
+    ID: numero
+    lado: numero
+    cantFTotal,cant: numero
+    ok: numero
+  comenzar
+    RecibirMensaje(ID,RF)
+    RecibirMensaje(lado,RF)
+    {}
+    cantFTotal:= 0
+    cant:=0
+    repetir 3
+      realizarCuadrado(lado,cant)
+      depositarF(cant)
+      EnviarMensaje(ID,RF)
+      EnviarMensaje(cant,RF)
+      cantFTotal:= cantFTotal + cant
+      cant:= 0      
+    Informar('cantT_',cantFTotal)
+  fin
+  robot tipoFiscalizador
+  variables
+    aux: numero
+    ID: numero
+    cantR1,cantR2,cantR3: numero
+  comenzar
+    {Les envio sus ID'sy lado}
+    EnviarMensaje(1,R1)
+    Random(aux,1,6)
+    EnviarMensaje(aux,R1)
+    EnviarMensaje(2,R2)
+    Random(aux,1,6)
+    EnviarMensaje(aux,R2)
+    EnviarMensaje(3,R3)
+    Random(aux,1,6)
+    EnviarMensaje(aux,R3)
+    {}
+    repetir 9
+      RecibirMensaje(ID,*)
+      si(ID = 1)
+        RecibirMensaje(aux,R1)
+        cantR1:= cantR1 + aux
+      sino
+        si(ID = 2)
+          RecibirMensaje(aux,R2)
+          cantR2:= cantR2 + aux
+        sino
+          si (ID = 3)
+            RecibirMensaje(aux,R3)
+            cantR3:= cantR3 + aux
+          sino
+            Informar('que_wea_de_id_',ID)
+      recolectarFlores(aux)
+    maximo(cantR1,cantR2,cantR3)  
+  fin
+variables
+  R1,R2,R3: tipo1
+  RF: tipoFiscalizador
+comenzar
+  AsignarArea(RF,AreaRF)
+  AsignarArea(RF,AreaEnComun)
+  AsignarArea(R1,AreaEnComun)
+  AsignarArea(R2,AreaEnComun)
+  AsignarArea(R3,AreaEnComun)
+  AsignarArea(R1,AreaR1)
+  AsignarArea(R2,AreaR2)
+  AsignarArea(R3,AreaR3)
+  Iniciar(RF,100,100)
+  Iniciar(R1,1,1)
+  Iniciar(R2,10,1)
+  Iniciar(R3,20,1)
+fin

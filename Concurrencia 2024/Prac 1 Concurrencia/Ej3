@@ -1,0 +1,66 @@
+programa Ejercicio3
+procesos
+  proceso juntarPapelEsquina(ES totPapeles: numero)
+  comenzar
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+      totPapeles:= totPapeles + 1
+  fin
+  proceso juntarFlorEsquina(ES totFlores: numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      totFlores:= totFlores + 1
+  fin
+  proceso recorrer(ES flores: numero; ES papeles: numero; E largo: numero)
+  comenzar
+    repetir largo
+      juntarFlorEsquina(flores)
+      juntarPapelEsquina(papeles)
+      mover
+  fin
+  proceso hacerEscalon(E largo: numero; ES cant:numero)
+  variables
+    flores: numero
+    papeles: numero
+  comenzar
+    recorrer(flores,papeles,largo)
+    derecha
+    recorrer(flores,papeles,largo)
+    repetir 3
+      derecha
+    si (papeles = (flores+1))
+      cant:= cant+1
+  fin
+  proceso hacerEscalera
+  variables
+    largo: numero
+    cant: numero
+  comenzar
+    largo:=1
+    cant:=0
+    repetir 4
+      hacerEscalon(largo,cant)
+      largo:=largo+1
+    Informar(cant)
+  fin
+areas
+  Area1: AreaC(12,6,32,24) 
+robots
+  robot tipo1
+  comenzar
+    hacerEscalera
+  fin
+variables
+  r1: tipo1
+  r2: tipo1
+  r3: tipo1
+comenzar
+  AsignarArea(r1,Area1)
+  AsignarArea(r2,Area1)
+  AsignarArea(r3,Area1)
+  Iniciar(r1,12,14)
+  Iniciar(r2,17,10)
+  Iniciar(r3,22,6)
+fin
+  

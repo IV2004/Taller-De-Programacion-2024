@@ -1,0 +1,148 @@
+programa Ejercicio1
+procesos
+  proceso juntarFlores(ES cant: numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      cant:= cant + 1
+  fin
+  proceso juntarPapeles(ES cant: numero)
+  comenzar
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+      cant:= cant + 1
+  fin
+  proceso recorrerAreaCompartida(ES cant: numero)
+  variables
+    av: numero
+    ca: numero
+  comenzar
+    av:= PosAv
+    ca:= PosCa
+    si(PosAv=1)
+      BloquearEsquina(av+1,ca)
+      mover
+      juntarPapeles(cant)
+      BloquearEsquina(av+2,ca)
+      mover
+      LiberarEsquina(av+1,ca)
+      juntarPapeles(cant)
+      mover
+      LiberarEsquina(av+2,ca)
+      juntarPapeles(cant)
+    sino
+      BloquearEsquina(av,ca+1)
+      mover
+      juntarFlores(cant)
+      BloquearEsquina(av,ca+2)
+      mover
+      LiberarEsquina(av,ca+1)
+      juntarFlores(cant)
+      mover
+      LiberarEsquina(av,ca+2)
+      juntarFlores(cant)
+  fin
+areas
+  AreaEnComun: AreaC(2,98,3,99)
+  AreaR1: AreaP(2,1,2,97)
+  AreaR1Extra: AreaP(2,100,2,100)
+  AreaR2: AreaP(3,1,3,97)
+  AreaR2Extra: AreaP(3,100,3,100)
+  AreaA1: AreaP(4,98,100,98)
+  AreaA1Extra: AreaP(1,98,1,98)
+  AreaA2: AreaP(4,99,100,99)
+  AreaA2Extra: AreaP(1,99,1,99)
+  AreaFiscalizador: AreaP(1,1,1,1)
+robots
+  robot equipoA
+  variables
+    cant: numero
+    equipo: numero
+  comenzar
+    RecibirMensaje(equipo,RF)
+    {Se podria realizar un solo tipo de robot pero entiendo que el enunciado quiere       que hagamos 2}
+    cant:=0
+    juntarFlores(cant)
+    repetir 96
+      mover
+      juntarFlores(cant)
+    recorrerAreaCompartida(cant)
+    EnviarMensaje(equipo,RF)
+    EnviarMensaje(cant,RF)
+  fin
+  robot equipoB
+  variables
+    cant: numero
+    equipo: numero
+  comenzar
+    RecibirMensaje(equipo,RF)
+    derecha
+    cant:=0
+    juntarPapeles(cant)
+    recorrerAreaCompartida(cant)
+    repetir 96
+      mover
+      juntarPapeles(cant)
+    EnviarMensaje(equipo,RF)
+    EnviarMensaje(cant,RF)
+  fin
+  robot tipoFiscalizador
+  variables
+    equipo: numero
+    cantEquipoA: numero
+    cantEquipoB: numero
+    aux: numero
+  comenzar
+    {Se puede resolver sin ID's pero con los mismos el tiempo pero probablemente}
+    {es menor el tiempo de ejecuccion debido a que siempre va a recibir cualquiera}
+    {cuando este listo y no ir esperando de a uno}
+    EnviarMensaje(0,R1)
+    EnviarMensaje(1,R2)
+    EnviarMensaje(2,A1)
+    EnviarMensaje(3,A2)
+    cantEquipoA:=0
+    cantEquipoB:=0
+    repetir 4
+      RecibirMensaje(equipo,*)
+      si(equipo < 2)
+        si(equipo = 0)
+          RecibirMensaje(aux,R1)
+        sino
+          RecibirMensaje(aux,R2)
+        cantEquipoA:= cantEquipoA + aux
+      sino
+        si (equipo = 2)
+          RecibirMensaje(aux,A1)
+        sino
+          RecibirMensaje(aux,A2)
+        cantEquipoB:= cantEquipoB + aux
+    {No considera el caso que empaten, si es el mismo gana B}
+    si(cantEquipoA>cantEquipoB)
+      Informar('El_ganador_es_el_equipo_A',1)
+    sino
+      Informar('El_ganador_es_el_equipo_B',2)
+  fin
+variables
+  R1,R2: equipoA
+  A1,A2: equipoB
+  RF: tipoFiscalizador
+comenzar
+  AsignarArea(RF,AreaFiscalizador)
+  AsignarArea(R1,AreaEnComun)
+  AsignarArea(R2,AreaEnComun)
+  AsignarArea(A1,AreaEnComun)
+  AsignarArea(A2,AreaEnComun)
+  AsignarArea(R1,AreaR1)
+  AsignarArea(R2,AreaR2)
+  AsignarArea(A1,AreaA1)
+  AsignarArea(A2,AreaA2)
+  AsignarArea(R1,AreaR1Extra)
+  AsignarArea(R2,AreaR2Extra)
+  AsignarArea(A1,AreaA1Extra)
+  AsignarArea(A2,AreaA2Extra)
+  Iniciar(RF,1,1)
+  Iniciar(R1,2,1)
+  Iniciar(R2,3,1)
+  Iniciar(A1,1,98)
+  Iniciar(A2,1,99)
+fin

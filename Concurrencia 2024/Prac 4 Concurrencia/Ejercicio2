@@ -1,0 +1,92 @@
+programa Ejercicio2
+procesos
+  proceso tomarYDepositar(ES cant: numero; E av: numero; E ca: numero)
+  comenzar
+    mientras HayPapelEnLaEsquina
+      si (cant = 5)
+        BloquearEsquina(50,50)
+        Pos(50,50)
+        repetir 5
+          depositarPapel
+        cant:= 0
+        Pos(av,ca)
+        LiberarEsquina(50,50)
+      sino
+        tomarPapel
+        cant:= cant + 1
+  fin
+  proceso juntarPapeles(ES cant: numero; E tomar: numero; ES intentos: numero)
+  comenzar
+    mientras (HayPapelEnLaEsquina)&(cant<tomar)
+      tomarPapel
+      cant:= cant + 1
+    si (cant < tomar)
+      intentos:= intentos + 1
+      repetir cant
+        depositarPapel
+      cant:= 0
+  fin
+areas
+  Almacen: AreaC(50,50,50,50)
+  AreaRP1: AreaP(5,1,5,100)
+  AreaRP2: AreaP(10,1,10,100)
+  AreaRC1: AreaP(11,1,11,1)
+  AreaRC2: AreaP(12,1,12,1)
+robots
+  robot tipoProductor
+  variables
+    cant: numero
+    av: numero
+    ca: numero
+  comenzar
+    cant:= 0
+    av:= PosAv  
+    mientras (PosCa<100)
+      ca:= PosCa
+      tomarYDepositar(cant,av,ca)
+      mover
+    tomarYDepositar(cant,av,ca)  
+  fin
+  robot tipoConsumidor
+  variables
+    intentos: numero
+    cant: numero
+    tomar: numero
+    av: numero
+    ca: numero
+  comenzar
+    cant:=0
+    av:= PosAv
+    ca:= PosCa
+    mientras (intentos<8)
+      Random(tomar,2,5)
+      BloquearEsquina(50,50)
+      Pos(50,50)
+      juntarPapeles(cant,tomar,intentos)
+      Pos(av,ca)
+      LiberarEsquina(50,50)
+      si (cant = tomar)
+        repetir cant
+          depositarPapel
+        intentos:= 0
+        cant:= 0
+  fin
+variables
+  RP1: tipoProductor
+  RP2: tipoProductor
+  RC1: tipoConsumidor
+  RC2: tipoConsumidor
+comenzar
+  AsignarArea(RP1,Almacen)
+  AsignarArea(RP2,Almacen)
+  AsignarArea(RC1,Almacen)
+  AsignarArea(RC2,Almacen)
+  AsignarArea(RP1,AreaRP1)
+  AsignarArea(RP2,AreaRP2)
+  AsignarArea(RC1,AreaRC1)
+  AsignarArea(RC2,AreaRC2)
+  Iniciar(RP1,5,1)
+  Iniciar(RP2,10,1)
+  Iniciar(RC1,11,1)
+  Iniciar(RC2,12,1)
+fin

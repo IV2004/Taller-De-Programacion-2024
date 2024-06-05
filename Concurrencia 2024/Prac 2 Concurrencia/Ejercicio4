@@ -1,0 +1,45 @@
+programa
+procesos
+  proceso juntarFlores(ES  totFlores: numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      totFlores:= totFlores + 1
+  fin
+  proceso juntarPapeles(ES totPapeles: numero)
+  comenzar
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+      totPapeles:= totPapeles + 1
+  fin
+areas
+  Area1: AreaC(25,25,75,75)
+  AreaJefe: AreaP(1,1,1,1)
+robots
+  robot tipo1
+  variables
+  
+  comenzar
+  
+  fin
+  robot tipoJefe
+  variables
+  
+  comenzar
+  
+  fin
+variables
+  R1,R2,R3,R4: tipo1
+  RF: tipoJefe
+comenzar
+  AsignarArea(R1,tipo1)
+  AsignarArea(R2,tipo1)
+  AsignarArea(R3,tipo1)
+  AsignarArea(R4,tipo1)
+  AsignarArea(RF,tipoJefe)
+  Iniciar(R1,25,1)
+  Iniciar(R2,30,1)
+  Iniciar(R3,35,1)
+  Iniciar(R4,40,1)
+  Iniciar(RF,1,1)
+fin

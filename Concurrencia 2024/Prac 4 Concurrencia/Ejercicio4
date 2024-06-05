@@ -1,0 +1,111 @@
+programa Ejercicio4
+procesos
+  proceso juntarFlores(ES  cant: numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      cant:= cant + 1
+  fin
+  proceso juntarPapeles(ES cant: numero)
+  comenzar
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+      cant:= cant + 1
+  fin
+  proceso vaciarBolsa(ES cantF: numero; ES cantP: numero)
+  comenzar
+    repetir cantF
+      depositarFlor
+    cantF:=0
+    repetir cantP
+      depositarPapel
+    cantP:=0
+  fin
+areas
+  AreaRF: AreaP(1,1,1,1)
+  AreaR1: AreaP(2,1,2,1)
+  AreaR2: AreaP(3,1,3,1)
+  AreaDeTareas: AreaPC(2,2,100,100)
+robots
+  robot tipoTrabajador
+  variables
+    avOri: numero
+    caOri: numero
+    av: numero
+    ca: numero
+    tarea: numero
+    cantF: numero
+    cantP: numero
+  comenzar
+    avOri:= PosAv
+    caOri:= PosCa
+    cantF:=0
+    cantP:=0
+    RecibirMensaje(tarea,RF)
+    mientras (tarea <> 0)
+      si(tarea < 4)
+        RecibirMensaje(av,RF)
+        RecibirMensaje(ca,RF)
+        si (tarea = 1)
+          Pos(av,ca)
+          juntarFlores(cantF)
+          Pos(avOri,caOri)
+          EnviarMensaje(1,RF)
+        sino
+          si(tarea = 2)
+            Pos(av,ca)
+            juntarPapeles(cantP)
+            Pos(avOri,caOri)
+            EnviarMensaje(1,RF)
+          sino
+            Pos(av,ca)
+            vaciarBolsa(cantF,cantP)
+            Pos(avOri,caOri)
+            EnviarMensaje(1,RF)
+      sino
+        {recibio la tarea 4}
+        EnviarMensaje(1,RF)
+      {Recibe la nueva tarea}
+      RecibirMensaje(tarea,RF)
+  fin
+  robot tipoJefe
+  variables
+    confirmacion: numero
+    tarea: numero
+    trabajador: numero
+    av: numero
+    ca: numero
+  comenzar
+    {De esta manera se le asigna una tarea a un RT aleatorio con una tarea aleatoria, se espera a que el RT confirme haber terminado la tarea y recien ahi vuelve a enviar otra tarea, otra forma que pense en hacerlo para que haya mejor concurrencia es enviando todas las tareas seguidas y despues esperar recibir las 10 confiramciones, de esa manera hay mas posibilidades de que mientras un robot esta realizando una tarea el otro tambien reciba una y se ponga a trabajar en vez de esperar a que el otro termine y vea la posibilidad de que le toque, lo unico que habria que cambiar en el codigo del robot trabajador es colocar Bloquear y Liberar Esquina's}
+    repetir 10
+      Random(trabajador,1,2)
+      Random(tarea,1,4)
+      Random(av,2,100)
+      Random(ca,2,100)
+      si(trabajador = 1)
+        EnviarMensaje(tarea,R1)
+        si (tarea < 4)
+          EnviarMensaje(av,R1)
+          EnviarMensaje(ca,R1)
+      sino
+        EnviarMensaje(tarea,R2)
+        si (tarea < 4)
+          EnviarMensaje(av,R2)
+          EnviarMensaje(ca,R2)
+      RecibirMensaje(confirmacion,*)
+    EnviarMensaje(0,R1)
+    EnviarMensaje(0,R2)
+  fin
+variables
+  R1,R2: tipoTrabajador
+  RF: tipoJefe
+comenzar
+  AsignarArea(RF,AreaRF)
+  AsignarArea(R1,AreaR1)
+  AsignarArea(R2,AreaR2)
+  AsignarArea(R1,AreaDeTareas)
+  AsignarArea(R2,AreaDeTareas)
+  Iniciar(RF,1,1)
+  Iniciar(R1,2,1)
+  Iniciar(R2,3,1)
+fin

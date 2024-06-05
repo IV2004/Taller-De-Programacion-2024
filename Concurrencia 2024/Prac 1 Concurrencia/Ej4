@@ -1,0 +1,78 @@
+programa Ejericio4
+procesos
+  proceso juntarPapelEsquina
+  comenzar
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+  fin
+  proceso juntarFlorEsquina
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+  fin
+  proceso recorrerAvR1
+  comenzar
+    juntarFlorEsquina
+    repetir 99
+      mover
+      juntarFlorEsquina
+  fin
+  proceso recorrerAvR2
+  comenzar
+    juntarPapelEsquina
+    repetir 99
+      mover
+      juntarPapelEsquina
+  fin
+  proceso recorrerAreaR1(ES av: numero)
+  comenzar
+    repetir 25
+      Pos(av,1)
+      recorrerAvR1
+      av:= av + 1
+  fin
+  proceso recorrerAreaR2(ES av: numero)
+  comenzar
+    repetir 25
+      Pos(av,1)
+      recorrerAvR2
+      av:=av +1
+  fin
+areas
+  Area1: AreaP(1,1,25,100)
+  Area2: AreaP(26,1,50,100)
+  Area3: AreaP(51,1,75,100)
+  Area4: AreaP(76,1,100,100)
+robots
+  robot tipo1
+  variables
+    av: numero
+  comenzar
+    av:=1
+    {repite la cantidad de areas que recorre y la distancia entre cada uno es 50}
+    repetir 2
+      recorrerAreaR1(av)
+      av:=av+50
+  fin
+  robot tipo2
+  variables
+    av: numero
+  comenzar
+    av:=26
+    repetir 2
+      recorrerAreaR2(av)
+      av:=av+50
+  fin
+variables
+  r1: tipo1
+  r2: tipo2
+comenzar
+  AsignarArea(r1,Area1)
+  AsignarArea(r1,Area3)
+  AsignarArea(r2,Area2)
+  AsignarArea(r2,Area4)
+  Iniciar(r1,1,1)
+  Iniciar(r2,26,1)
+fin
+  
+  

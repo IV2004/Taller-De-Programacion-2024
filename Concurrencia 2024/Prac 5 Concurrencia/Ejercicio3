@@ -1,0 +1,34 @@
+programa Ejercicio3
+procesos
+  proceso
+
+areas
+
+robots
+  robot recolector
+  variables
+    f: numero
+    pasos: numero
+  comenzar
+    
+  fin
+  robot cosechador
+  variables
+    cant: numero
+    finalizados: numero
+    fls: numero
+  comenzar
+    cant:= 0
+    mientras ( finalizados < 2 )
+      RecibirMensaje(cant,*)
+      si ( cant > 0 )
+        recolectar(fls, cant)
+      sino
+        finalizados:= finalizados + 1
+    Informar('La_Cantidad_fue'.fls)
+  fin
+variables
+
+comenzar
+
+fin
