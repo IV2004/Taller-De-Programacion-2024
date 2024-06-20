@@ -1,1 +1,1 @@
--Practicas csai resueltas en su totalidad de la materia de Taller de Programacion en 2024 de la UNLP
+-Practicas casi resueltas en su totalidad de la materia de Taller de Programacion en 2024 de la UNLP
